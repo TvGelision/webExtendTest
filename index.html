@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Home - Web Extend Test Shop</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="home">
+  <header id="site-header"></header>
+  <div class="test-banner">Synthetic test shop for SAP Engagement Cloud Web Extend. No real data, no payments.</div>
+  <main>
+    <!-- Hero: one main message plus a sale promo -->
+    <section class="hero-grid">
+      <div class="hero">
+        <p class="eyebrow">Autumn collection</p>
+        <h1>Gear for every trail and every day</h1>
+        <p>Jackets, footwear and accessories built to last. Browse, add to cart and watch every Web Extend command land in the console below.</p>
+        <a class="btn" href="category.html">Shop all products</a>
+      </div>
+      <a class="promo" href="category.html?cat=Sale">
+        <span class="eyebrow">Limited time</span>
+        <strong>Up to 25% off</strong>
+        <span>Shop the sale →</span>
+      </a>
+    </section>
+
+    <!-- Category tiles -->
+    <section class="tiles">
+      <a class="tile" href="category.html?cat=Apparel" style="background:#cfe3f1"><span>🧥</span>Apparel</a>
+      <a class="tile" href="category.html?cat=Footwear" style="background:#f6d5d0"><span>👟</span>Footwear</a>
+      <a class="tile" href="category.html?cat=Accessories" style="background:#d6dcf3"><span>🎒</span>Accessories</a>
+    </section>
+
+    <!-- Recommendation carousels (filled by js/pages.js) -->
+    <div id="slots"></div>
+
+    <section class="benefits">
+      <div><strong>Free returns</strong><span>Within 30 days (synthetic)</span></div>
+      <div><strong>Fast delivery</strong><span>Next-day on most items</span></div>
+      <div><strong>Test mode on</strong><span>Safe to click around</span></div>
+    </section>
+  </main>
+  <script src="js/debug-console.js"></script>
+  <script src="js/web-extend.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

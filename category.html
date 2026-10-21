@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Category - Web Extend Test Shop</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="category">
+  <header id="site-header"></header>
+  <main>
+    <h1 id="cat-title">Products</h1>
+    <div class="pills" id="cat-pills"></div>
+    <div class="toolbar">
+      <span id="count" class="muted"></span>
+      <label class="inline">Sort
+        <select id="sort">
+          <option value="popular">Most popular</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+        </select>
+      </label>
+    </div>
+    <div class="grid" id="list"></div>
+  </main>
+  <script src="js/debug-console.js"></script>
+  <script src="js/web-extend.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Login - Web Extend Test Shop</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="login">
+  <header id="site-header"></header>
+  <main>
+    <h1>Simulated customer login</h1>
+    <p class="notice">No password is needed. Pick a synthetic customer; its ID is sent to Web Extend via <code>setCustomerId</code> on every following page.</p>
+    <p id="current" class="msg"></p>
+    <form id="login-form" class="stack">
+      <label>Customer <select id="customer"></select></label>
+      <button class="btn" type="submit">Log in</button>
+    </form>
+    <p><button class="btn secondary" id="logout" type="button">Log out</button></p>
+  </main>
+  <script src="js/debug-console.js"></script>
+  <script src="js/web-extend.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>
