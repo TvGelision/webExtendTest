@@ -8,16 +8,22 @@
   'use strict';
 
   var CART_KEY = 'we_cart';         // [{ id, qty }]
-  var SESSION_KEY = 'we_session';   // { cdId, name } or absent when logged out
+  var SESSION_KEY = 'we_session';   // { key, name, cdId } or absent when logged out
   var ORDER_KEY = 'we_last_order';  // most recent synthetic order, read by the confirmation page
   var RECENT_KEY = 'we_recent';     // product IDs viewed, newest first
 
   // Synthetic customers for the simulated login. No passwords exist: "login" just picks one.
-  // cdId is the CD ID of the matching test contact in the SAP tenant; it is the value that
-  // setCustomerId sends. Only add a customer here once its contact exists with a real CD ID,
-  // otherwise Web Extend creates stray contacts.
+  // Three separate fields per customer:
+  //   key  - internal handle used by the login form (never sent to SAP)
+  //   name - display name only (never sent to SAP)
+  //   cdId - the CD ID of the matching test contact in the SAP tenant; this is the value
+  //          setCustomerId sends.
+  // Test Customer One has a real CD ID. Two and Three use PLACEHOLDER CD IDs: replace them
+  // with the CD IDs of real test contacts, or Web Extend creates stray contacts.
   var CUSTOMERS = [
-    { cdId: '123456789', name: 'Test Customer One' }
+    { key: 'customer-1', name: 'Test Customer One',   cdId: '123456789' },
+    { key: 'customer-2', name: 'Test Customer Two',   cdId: 'test-customer-1002' },
+    { key: 'customer-3', name: 'Test Customer Three', cdId: 'test-customer-1003' }
   ];
 
   // localStorage can throw (blocked storage); fall back to "empty" rather than crash.

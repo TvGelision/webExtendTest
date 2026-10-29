@@ -120,7 +120,7 @@
   }
   /** "Picked for you": popularity order rotated by customer, so each test customer sees a different list. */
   function personal(all, session) {
-    var idx = Shop.CUSTOMERS.map(function (c) { return c.cdId; }).indexOf(session.cdId);
+    var idx = Shop.CUSTOMERS.map(function (c) { return c.key; }).indexOf(session.key);
     var sorted = all.slice().sort(byPopularity);
     var shift = (idx + 1) * 3 % sorted.length;
     return sorted.slice(shift).concat(sorted.slice(0, shift));
@@ -333,14 +333,20 @@
     login: function (products, lines) {
       var s = Shop.getSession();
       $('#current').textContent = s ? 'Logged in as ' + s.name + ' (' + s.cdId + ').' : 'Not logged in.';
+      // The dropdown shows names only; the CD ID is its own read-only field and is what gets sent.
       $('#customer').innerHTML = Shop.CUSTOMERS.map(function (c) {
-        return '<option value="' + Shop.esc(c.cdId) + '">' + Shop.esc(c.name) + ' – ' + Shop.esc(c.cdId) + '</option>';
+        return '<option value="' + Shop.esc(c.key) + '">' + Shop.esc(c.name) + '</option>';
       }).join('');
+      function selected() {
+        return Shop.CUSTOMERS.filter(function (c) { return c.key === $('#customer').value; })[0];
+      }
+      function showCdId() { $('#cdid').value = selected().cdId; }
+      $('#customer').addEventListener('change', showCdId);
+      showCdId();
 
       $('#login-form').addEventListener('submit', function (ev) {
         ev.preventDefault();
-        var chosen = Shop.CUSTOMERS.filter(function (c) { return c.cdId === $('#customer').value; })[0];
-        Shop.login(chosen);
+        Shop.login(selected());
         location.href = 'index.html';       // setCustomerId is sent by track() on the next page
       });
       $('#logout').addEventListener('click', function () {
