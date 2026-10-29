@@ -11,11 +11,11 @@
   <header id="site-header"></header>
   <main>
     <h1>Simulated customer login</h1>
-    <p class="notice">No password is needed. Pick a synthetic customer; its ID is sent to Web Extend via <code>setCustomerId</code> on every following page.</p>
+    <p class="notice">No password is needed. Pick a synthetic customer. Their CD ID is sent to Web Extend via <code>setCustomerId</code> on every following page; it is not shown here, and the email is display only.</p>
     <p id="current" class="msg"></p>
     <form id="login-form" class="stack">
       <label>Customer <select id="customer"></select></label>
-      <label>CD ID (sent as <code>setCustomerId</code>) <input id="cdid" readonly></label>
+      <p id="details" class="notice" aria-live="polite"></p>
       <button class="btn" type="submit">Log in</button>
     </form>
     <p><button class="btn secondary" id="logout" type="button">Log out</button></p>

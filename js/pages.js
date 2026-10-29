@@ -332,17 +332,20 @@
 
     login: function (products, lines) {
       var s = Shop.getSession();
-      $('#current').textContent = s ? 'Logged in as ' + s.name + ' (' + s.cdId + ').' : 'Not logged in.';
-      // The dropdown shows names only; the CD ID is its own read-only field and is what gets sent.
+      $('#current').textContent = s ? 'Logged in as ' + s.name + ' (' + (s.email || '') + ').' : 'Not logged in.';
+      // The dropdown shows name and email. The CD ID is not displayed; it is used under the hood.
       $('#customer').innerHTML = Shop.CUSTOMERS.map(function (c) {
-        return '<option value="' + Shop.esc(c.key) + '">' + Shop.esc(c.name) + '</option>';
+        return '<option value="' + Shop.esc(c.key) + '">' + Shop.esc(c.name) + ' – ' + Shop.esc(c.email) + '</option>';
       }).join('');
       function selected() {
         return Shop.CUSTOMERS.filter(function (c) { return c.key === $('#customer').value; })[0];
       }
-      function showCdId() { $('#cdid').value = selected().cdId; }
-      $('#customer').addEventListener('change', showCdId);
-      showCdId();
+      function showDetails() {
+        var c = selected();
+        $('#details').innerHTML = '<strong>' + Shop.esc(c.name) + '</strong><br>' + Shop.esc(c.email);
+      }
+      $('#customer').addEventListener('change', showDetails);
+      showDetails();
 
       $('#login-form').addEventListener('submit', function (ev) {
         ev.preventDefault();
