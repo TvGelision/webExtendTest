@@ -28,7 +28,7 @@
     businessAreaId: 'NL01',
 
     // When true, pages call testMode() before go(), so SAP treats the traffic as test data.
-    testMode: true,
+    testMode: false,
 
     // Stage 1 (current): commands are only written to the debug console.
     // Stage 2: set to true to also push every command onto window.ScarabQueue
