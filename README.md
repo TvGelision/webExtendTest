@@ -73,6 +73,26 @@ When you want to go beyond logging:
 Check the command names and payloads against your tenant's Web Extend documentation,
 in particular `businessAreaId`, which is modelled here as a plain command.
 
+## Connecting via GTM (option B)
+
+With `gtm.enabled: true` in the configuration block of `js/web-extend.js`, the adapter:
+
+1. pushes `{ event: 'webextend_init', we_merchantId, we_businessAreaId, we_testMode }` onto `window.dataLayer`,
+2. loads the GTM container (`gtm.containerId`) from JavaScript, so there is no snippet to paste into each page,
+3. pushes one event per command: `{ event: 'webextend_command', we_command: 'view', we_payload_json: '"P1001"' }`.
+
+`we_payload_json` is a JSON string on purpose, because GTM merges nested objects between pushes.
+Commands are still written to the debug console too.
+
+In GTM, a typical setup is:
+
+- Data Layer Variables: `we_command`, `we_payload_json`, `we_merchantId`.
+- A Custom HTML tag that loads the SAP Web Extend script with the merchant ID (take the loader from your SAP tenant).
+- A Custom HTML tag on the Custom Event trigger `webextend_command` that does
+  `ScarabQueue.push([cmd, payload])` with `cmd = {{we_command}}` and `payload = JSON.parse({{we_payload_json}})` (skip the payload when it is empty).
+
+Test with GTM Preview (Tag Assistant) and the debug console side by side. Set `gtm.enabled: false` to go back to console-only.
+
 ## Test checklist
 
 1. Open the home page. Console shows `testMode`, `businessAreaId`, `cart []`, `tag "page:home"`, `go`.

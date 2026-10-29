@@ -35,18 +35,58 @@
     // Stage 2: set to true to also push every command onto window.ScarabQueue
     // (the queue the real SAP script drains). The SAP script itself is NOT
     // loaded by this project - add it yourself, in the HTML, when ready.
-    forwardToScarabQueue: false
+    forwardToScarabQueue: false,
+
+    // Google Tag Manager route (option B). When enabled, this file loads the GTM container
+    // and pushes every command onto window.dataLayer. A GTM tag then loads Web Extend and
+    // passes the commands on (see README, "Connecting via GTM").
+    // GTM is a Google container ID, not a secret; it is visible in page source anyway.
+    gtm: {
+      enabled: true,
+      containerId: 'GTM-PDRBRRPX'
+    }
   };
   /* ===================== END OF SAP TRACKING CONFIGURATION ============= */
 
+  /* ---------- GTM loader + dataLayer (only when SAP_CONFIG.gtm.enabled) ---------- */
+  window.dataLayer = window.dataLayer || [];
+
+  if (SAP_CONFIG.gtm.enabled) {
+    // Tell GTM which tenant/mode we are in BEFORE it loads, so tags can use these as variables.
+    window.dataLayer.push({
+      event: 'webextend_init',
+      we_merchantId: SAP_CONFIG.merchantId,
+      we_businessAreaId: SAP_CONFIG.businessAreaId,
+      we_testMode: SAP_CONFIG.testMode
+    });
+    // Standard GTM loader, injected from JS so the container ID lives only in the config above.
+    window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var gtmScript = document.createElement('script');
+    gtmScript.async = true;
+    gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(SAP_CONFIG.gtm.containerId);
+    document.head.appendChild(gtmScript);
+    if (window.WebExtendDebug) window.WebExtendDebug.log('GTM container loading: ' + SAP_CONFIG.gtm.containerId + ' (commands also go to dataLayer)', undefined, 'note');
+  }
+
   /**
-   * Single exit point for every command. Today it logs; later it can also forward.
+   * Single exit point for every command. It logs to the debug console and, depending on the
+   * configuration, also pushes to the dataLayer (GTM) and/or the ScarabQueue (direct).
    * @param {string} command  Web Extend command name, e.g. 'view'
    * @param {*}      payload  Command argument(s); undefined for commands without one
    */
   function dispatch(command, payload) {
     if (window.WebExtendDebug) window.WebExtendDebug.log(command, payload);
     else if (window.console) console.log('[WebExtend]', command, payload);
+
+    if (SAP_CONFIG.gtm.enabled) {
+      // One event per command. we_payload_json is a string on purpose: GTM merges nested
+      // objects between pushes, so a JSON string avoids stale fields from earlier commands.
+      window.dataLayer.push({
+        event: 'webextend_command',
+        we_command: command,
+        we_payload_json: payload === undefined ? '' : JSON.stringify(payload)
+      });
+    }
 
     if (SAP_CONFIG.forwardToScarabQueue) {
       window.ScarabQueue = window.ScarabQueue || [];
