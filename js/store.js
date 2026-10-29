@@ -38,6 +38,44 @@
     try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* ignore */ }
   }
 
+  // Placeholder avatar (generic person icon) shown for the logged-in test customer.
+  var AVATAR_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor">' +
+    '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg>';
+
+  /** Header user area: "Log in" link, or avatar button with a pop-up menu when logged in. */
+  function userMenuHtml(s) {
+    if (!s) return '<a class="login-link" href="login.html">Log in</a>';
+    return '<div class="user-menu">' +
+      '<button type="button" class="avatar" id="user-btn" aria-haspopup="true" aria-expanded="false" aria-label="Account menu">' + AVATAR_SVG + '</button>' +
+      '<div class="menu" id="user-popup" role="menu" hidden>' +
+        '<div class="menu-head"><strong>' + Shop.esc(s.name) + '</strong>' +
+          (s.email ? '<span>' + Shop.esc(s.email) + '</span>' : '') + '</div>' +
+        '<a role="menuitem" href="login.html">Switch user</a>' +
+        '<a role="menuitem" href="cart.html">My cart</a>' +
+        '<button type="button" role="menuitem" id="logout-btn">Log out</button>' +
+      '</div></div>';
+  }
+
+  // One set of document-level listeners (renderHeader runs many times; header HTML is replaced each time).
+  function setPopup(open) {
+    var btn = document.getElementById('user-btn'), pop = document.getElementById('user-popup');
+    if (!btn || !pop) return;
+    pop.hidden = !open;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  document.addEventListener('click', function (ev) {
+    if (ev.target.closest('#user-btn')) {
+      var pop = document.getElementById('user-popup');
+      setPopup(pop.hidden);
+    } else if (ev.target.closest('#logout-btn')) {
+      Shop.logout();
+      location.href = 'index.html';
+    } else if (!ev.target.closest('#user-popup')) {
+      setPopup(false);                                  // click outside closes the menu
+    }
+  });
+  document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') setPopup(false); });
+
   var productsPromise = null;
 
   var Shop = {
@@ -148,10 +186,7 @@
         '<form class="search" action="category.html" method="get" role="search">' +
           '<input type="search" name="q" placeholder="Search products" aria-label="Search products">' +
         '</form>' +
-        '<span class="session">' +
-          (s ? Shop.esc(s.name) + (s.email ? ' (' + Shop.esc(s.email) + ')' : '') + ' · <a href="login.html">Switch / log out</a>'
-             : '<a href="login.html">Log in</a>') +
-        '</span>' +
+        userMenuHtml(s) +
         '<a href="cart.html">Cart <span class="badge">' + Shop.cartCount() + '</span></a>';
     }
   };
