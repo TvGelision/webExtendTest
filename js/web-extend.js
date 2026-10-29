@@ -30,11 +30,20 @@
     // When true, pages call testMode() before go(), so SAP treats the traffic as test data.
     testMode: false,
 
-    // Stage 1 (current): commands are only written to the debug console.
-    // Stage 2: set to true to also push every command onto window.ScarabQueue
-    // (the queue the real SAP script drains). The SAP script itself is NOT
-    // loaded by this project - add it yourself, in the HTML, when ready.
+    // Direct route (option A, no GTM). Do NOT combine with the GTM route below if the GTM
+    // container also loads the SAP script, or every event is sent twice.
+    //
+    // loadScarabScript: injects SAP's loader (cdn.scarabresearch.com/js/<merchantId>/scarab-v2.js),
+    //                   the same snippet the Emarsys consultant provided, with the merchant ID from above.
+    // forwardToScarabQueue: pushes every command onto window.ScarabQueue, which that script drains.
+    // Set both to false to go back to console-only.
+    loadScarabScript: true,
     forwardToScarabQueue: true,
+
+    // Commands that are only logged, never forwarded to SAP. `recommend` stays local because
+    // the carousels are filled by this shop's own rules; a real `recommend` request would need
+    // a SAP template and may overwrite the carousel markup.
+    notForwarded: ['recommend'],
 
     // Google Tag Manager route (option B). When enabled, this file loads the GTM container
     // and pushes every command onto window.dataLayer. A GTM tag then loads Web Extend and
@@ -67,6 +76,23 @@
     if (window.WebExtendDebug) window.WebExtendDebug.log('GTM container loading: ' + SAP_CONFIG.gtm.containerId + ' (commands also go to dataLayer)', undefined, 'note');
   }
 
+  /* ---------- Direct route: ScarabQueue + SAP loader ---------- */
+  // Same as the consultant's snippet: create the queue first, then load the script.
+  // Commands pushed before the script has loaded are processed once it arrives.
+  window.ScarabQueue = window.ScarabQueue || [];
+
+  if (SAP_CONFIG.loadScarabScript) {
+    (function (id) {
+      if (document.getElementById(id)) return;          // never load twice
+      var js = document.createElement('script');
+      js.id = id;
+      js.src = 'https://cdn.scarabresearch.com/js/' + encodeURIComponent(SAP_CONFIG.merchantId) + '/scarab-v2.js';
+      var fs = document.getElementsByTagName('script')[0];
+      fs.parentNode.insertBefore(js, fs);
+      if (window.WebExtendDebug) window.WebExtendDebug.log('SAP scarab-v2.js loading for merchant ' + SAP_CONFIG.merchantId, undefined, 'note');
+    })('scarab-js-api');
+  }
+
   /**
    * Single exit point for every command. It logs to the debug console and, depending on the
    * configuration, also pushes to the dataLayer (GTM) and/or the ScarabQueue (direct).
@@ -87,8 +113,7 @@
       });
     }
 
-    if (SAP_CONFIG.forwardToScarabQueue) {
-      window.ScarabQueue = window.ScarabQueue || [];
+    if (SAP_CONFIG.forwardToScarabQueue && SAP_CONFIG.notForwarded.indexOf(command) === -1) {
       window.ScarabQueue.push(payload === undefined ? [command] : [command, payload]);
     }
   }

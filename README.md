@@ -65,10 +65,12 @@ All SAP settings live in the block marked **SAP TRACKING CONFIGURATION** at the 
 of that file (merchant ID, business area ID, test mode, forwarding switch). The values
 are placeholders; do not commit real IDs.
 
-When you want to go beyond logging:
-
-1. Add the SAP-provided Web Extend loader script to the pages yourself, with your merchant ID.
-2. Set `forwardToScarabQueue: true` in the configuration so each command is also pushed onto `window.ScarabQueue`.
+Direct route (no GTM): with `loadScarabScript: true` the adapter injects SAP's
+`scarab-v2.js` loader for your merchant ID (the snippet from the Emarsys consultant),
+and with `forwardToScarabQueue: true` every command is also pushed onto `window.ScarabQueue`.
+`recommend` is never forwarded (`notForwarded`), because the carousels are filled locally.
+Set both flags to `false` to go back to console-only. Use either this route or the GTM route
+below, not both, otherwise events are sent twice.
 
 Check the command names and payloads against your tenant's Web Extend documentation,
 in particular `businessAreaId`, which is modelled here as a plain command.
