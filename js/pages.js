@@ -20,7 +20,7 @@
 
   /**
    * Standard Web Extend call sequence for one page view:
-   *   testMode -> businessAreaId -> setCustomerId -> page-specific commands -> recommend -> cart -> tag -> go
+   *   testMode -> businessAreaId -> setCustomerId -> setEmail -> page-specific commands -> recommend -> cart -> tag -> go
    * `extra` is a function that issues the page-specific commands (category, view, purchase ...).
    * go() always comes last because it flushes everything queued before it.
    */
@@ -30,7 +30,10 @@
 
     if (we.config.testMode) we.testMode();
     if (we.config.businessAreaId) we.businessAreaId(we.config.businessAreaId);
-    if (session) we.setCustomerId(session.customerId);   // only when "logged in"
+    if (session) {                                        // only when "logged in"
+      we.setCustomerId(session.customerId);               // CD ID of the test contact
+      if (session.email) we.setEmail(session.email);      // same contact, linked by email
+    }
     if (extra) extra();
     slotsUsed.forEach(function (s) { we.recommend(s); });
     we.cart(cartPayload(lines));      // sent on every page; [] clears the cart on the SAP side
@@ -334,7 +337,7 @@
       var s = Shop.getSession();
       $('#current').textContent = s ? 'Logged in as ' + s.name + ' (' + s.customerId + ').' : 'Not logged in.';
       $('#customer').innerHTML = Shop.CUSTOMERS.map(function (c) {
-        return '<option value="' + Shop.esc(c.customerId) + '">' + Shop.esc(c.name) + ' – ' + Shop.esc(c.customerId) + '</option>';
+        return '<option value="' + Shop.esc(c.customerId) + '">' + Shop.esc(c.name) + ' – ' + Shop.esc(c.email || c.customerId) + '</option>';
       }).join('');
 
       $('#login-form').addEventListener('submit', function (ev) {

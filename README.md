@@ -31,7 +31,7 @@ Then open <http://localhost:8080/>.
 | `login.html` | Simulated customer login | `setCustomerId` (from the next page on) |
 
 Every page sends, in this order: `testMode` (if enabled), `businessAreaId`,
-`setCustomerId` (if logged in), page-specific commands, `recommend` (one per carousel), `cart`, `tag`, `go`.
+`setCustomerId` and `setEmail` (if logged in; Test Customer One sends CD ID `123456789` and `test-customer-1001@example.com`), page-specific commands, `recommend` (one per carousel), `cart`, `tag`, `go`.
 Adding to cart or changing quantities re-sends `cart` + `go` without a page load.
 
 ## Test scenarios built into the data
