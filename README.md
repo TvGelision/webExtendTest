@@ -43,7 +43,7 @@ Adding to cart or changing quantities re-sends `cart` + `go` without a page load
   They are filled by simple local rules (see `pages.js`) and mark where SAP recommendations would go.
   `recommend` and `searchTerm` are extras beyond the nine required commands; verify their exact names and options for your tenant.
 - **Recently viewed** is stored in localStorage and shown on the homepage and PDP.
-- **Personalisation**: logging in as a test customer adds a "Picked for you" carousel to the homepage. Add more customers in `js/store.js` once their contacts exist in the tenant (each needs a real CD ID).
+- **Personalisation**: logging in as a test customer adds a "Picked for you" carousel to the homepage. Add more customers in `js/store.js` once their contacts exist in the tenant (each needs a real CD ID). The five customers in `js/store.js` match the test contacts in the tenant (NL01); only their CD ID is sent.
 
 ## Project layout
 
@@ -102,7 +102,7 @@ Test with GTM Preview (Tag Assistant) and the debug console side by side. Set `g
 2. Click a category pill. `category "Hardware"` appears before `go`.
 3. Open a product. `view "000000000010010563"` appears.
 4. Click **Add to cart**. A fresh `cart [...]` + `go` pair appears.
-5. Open **Log in**, choose a customer, submit. On the next page `setCustomerId "123456789"` (the CD ID of Test Customer One) appears.
+5. Open **Log in**, choose a customer, submit. On the next page `setCustomerId "CD4709951471"` (the CD ID of Sanne de Vries, customer 1) appears.
 6. Open the cart, change quantities, check the `cart` payload follows.
 7. Check out with the pre-filled fake data. The confirmation page logs `purchase` with the `TEST-...` order ID. Reloading it logs "purchase skipped" instead of a duplicate.
 8. Use **Clear** and **Collapse** on the console as needed.

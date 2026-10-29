@@ -12,19 +12,20 @@
   var ORDER_KEY = 'we_last_order';  // most recent synthetic order, read by the confirmation page
   var RECENT_KEY = 'we_recent';     // product IDs viewed, newest first
 
-  // Synthetic customers for the simulated login. No passwords exist: "login" just picks one.
+  // The 5 synthetic test customers created in the SAP tenant (Business Area NL North, NL01).
+  // Names, emails and CD IDs match the Postman collection / customer sheet exactly.
   // Fields per customer:
   //   key   - internal handle used by the login form (never sent to SAP)
   //   name  - display name (never sent to SAP)
   //   email - display only (never sent to SAP; the tenant does not allow duplicate emails)
-  //   cdId  - the CD ID of the matching test contact in the SAP tenant. It works "under water":
-  //           never shown in the UI, but it is the value setCustomerId sends.
-  // Test Customer One has a real CD ID. Two and Three use PLACEHOLDER CD IDs: replace them
-  // with the CD IDs of real test contacts, or Web Extend creates stray contacts.
+  //   cdId  - CD ID of the contact in the tenant. It works "under water": never shown in the
+  //           UI, but it is the value setCustomerId sends.
   var CUSTOMERS = [
-    { key: 'customer-1', name: 'Test Customer One',   email: 'test-customer-1001@example.com', cdId: '123456789' },
-    { key: 'customer-2', name: 'Test Customer Two',   email: 'test-customer-1002@example.com', cdId: 'test-customer-1002' },
-    { key: 'customer-3', name: 'Test Customer Three', email: 'test-customer-1003@example.com', cdId: 'test-customer-1003' }
+    { key: 'customer-1', name: 'Sanne de Vries',     email: 'web-test-01-1908@fg-test.example', cdId: 'CD4709951471' },
+    { key: 'customer-2', name: 'Bram Jansen',        email: 'web-test-02-0135@fg-test.example', cdId: 'CD1595097024' },
+    { key: 'customer-3', name: 'Lotte van den Berg', email: 'web-test-03-8028@fg-test.example', cdId: 'CD2654400695' },
+    { key: 'customer-4', name: 'Daan Bakker',        email: 'web-test-04-2658@fg-test.example', cdId: 'CD2649122328' },
+    { key: 'customer-5', name: 'Noor Visser',        email: 'web-test-05-5215@fg-test.example', cdId: 'CD0122962129' }
   ];
 
   // localStorage can throw (blocked storage); fall back to "empty" rather than crash.
