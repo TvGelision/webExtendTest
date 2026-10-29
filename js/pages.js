@@ -38,9 +38,13 @@
     we.go();
   }
 
-  /** Re-sends the cart after the shopper changes it without a page load (add to cart, qty change). */
-  function resendCart(products) {
+  /**
+   * Re-sends the cart after the shopper changes it without a page load (add to cart, qty change).
+   * Optional `tag` marks the action, e.g. 'add_to_cart'; it is queued before go().
+   */
+  function resendCart(products, tag) {
     window.WebExtend.cart(cartPayload(Shop.cartLines(products)));
+    if (tag) window.WebExtend.tag(tag);
     window.WebExtend.go();
   }
 
@@ -208,7 +212,7 @@
         Shop.addToCart(p.id, 1);
         Shop.renderHeader();
         $('#msg').textContent = 'Added to cart.';
-        resendCart(products);
+        resendCart(products, 'add_to_cart');   // dedicated tag for the add-to-cart action
       });
 
       // Three recommendation slots below the product.
