@@ -41,7 +41,7 @@
     // passes the commands on (see README, "Connecting via GTM").
     // GTM is a Google container ID, not a secret; it is visible in page source anyway.
     gtm: {
-      enabled: true,
+      enabled: false,
       containerId: 'GTM-PDRBRRPX'
     }
   };
