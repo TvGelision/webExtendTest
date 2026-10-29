@@ -142,9 +142,6 @@
     /** Identify a logged-in customer. Use a pseudonymous ID, never an email or name. */
     setCustomerId: function (id) { dispatch('setCustomerId', id); },
 
-    /** Identify a logged-in customer by email. Only synthetic example.com addresses are used here. */
-    setEmail: function (email) { dispatch('setEmail', email); },
-
     /** Business area (e.g. brand or country site) this traffic belongs to. */
     businessAreaId: function (id) { dispatch('businessAreaId', id); },
 

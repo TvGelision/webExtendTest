@@ -17,7 +17,7 @@
   // Customer One uses the CD ID of the test contact in the SAP tenant (email
   // test-customer-1001@example.com); that is the value setCustomerId sends.
   var CUSTOMERS = [
-    { customerId: '123456789', name: 'Test Customer One', email: 'test-customer-1001@example.com' },
+    { customerId: '123456789', name: 'Test Customer One' },
     { customerId: 'test-customer-1002', name: 'Test Customer Two' },
     { customerId: 'test-customer-1003', name: 'Test Customer Three' }
   ];
