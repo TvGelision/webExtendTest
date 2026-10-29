@@ -8,18 +8,16 @@
   'use strict';
 
   var CART_KEY = 'we_cart';         // [{ id, qty }]
-  var SESSION_KEY = 'we_session';   // { customerId, name } or absent when logged out
+  var SESSION_KEY = 'we_session';   // { cdId, name } or absent when logged out
   var ORDER_KEY = 'we_last_order';  // most recent synthetic order, read by the confirmation page
   var RECENT_KEY = 'we_recent';     // product IDs viewed, newest first
 
-  // Synthetic customers for the simulated login. IDs are made-up pseudonyms,
-  // not real people. No passwords exist: "login" just picks one of these.
-  // Customer One uses the CD ID of the test contact in the SAP tenant (email
-  // test-customer-1001@example.com); that is the value setCustomerId sends.
+  // Synthetic customers for the simulated login. No passwords exist: "login" just picks one.
+  // cdId is the CD ID of the matching test contact in the SAP tenant; it is the value that
+  // setCustomerId sends. Only add a customer here once its contact exists with a real CD ID,
+  // otherwise Web Extend creates stray contacts.
   var CUSTOMERS = [
-    { customerId: '123456789', name: 'Test Customer One' },
-    { customerId: 'test-customer-1002', name: 'Test Customer Two' },
-    { customerId: 'test-customer-1003', name: 'Test Customer Three' }
+    { cdId: '123456789', name: 'Test Customer One' }
   ];
 
   // localStorage can throw (blocked storage); fall back to "empty" rather than crash.
@@ -108,7 +106,11 @@
     },
 
     /* ---------------- simulated customer session ---------------- */
-    getSession: function () { return read(SESSION_KEY, null); },
+    getSession: function () {
+      var s = read(SESSION_KEY, null);
+      if (s && !s.cdId && s.customerId) s.cdId = s.customerId;   // sessions saved before the rename
+      return s;
+    },
     login: function (customer) { write(SESSION_KEY, customer); },
     logout: function () { try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ } },
 
@@ -135,7 +137,7 @@
           '<input type="search" name="q" placeholder="Search products" aria-label="Search products">' +
         '</form>' +
         '<span class="session">' +
-          (s ? Shop.esc(s.name) + ' (' + Shop.esc(s.customerId) + ') · <a href="login.html">Switch / log out</a>'
+          (s ? Shop.esc(s.name) + ' (' + Shop.esc(s.cdId) + ') · <a href="login.html">Switch / log out</a>'
              : '<a href="login.html">Log in</a>') +
         '</span>' +
         '<a href="cart.html">Cart <span class="badge">' + Shop.cartCount() + '</span></a>';

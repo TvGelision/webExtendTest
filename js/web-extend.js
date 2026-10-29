@@ -139,8 +139,8 @@
      */
     purchase: function (order) { dispatch('purchase', order); },
 
-    /** Identify a logged-in customer. Use a pseudonymous ID, never an email or name. */
-    setCustomerId: function (id) { dispatch('setCustomerId', id); },
+    /** Identify a logged-in customer by their CD ID. Never an email address or name. */
+    setCustomerId: function (cdId) { dispatch('setCustomerId', cdId); },
 
     /** Business area (e.g. brand or country site) this traffic belongs to. */
     businessAreaId: function (id) { dispatch('businessAreaId', id); },

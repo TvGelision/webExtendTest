@@ -42,7 +42,7 @@ Adding to cart or changing quantities re-sends `cart` + `go` without a page load
   They are filled by simple local rules (see `pages.js`) and mark where SAP recommendations would go.
   `recommend` and `searchTerm` are extras beyond the nine required commands; verify their exact names and options for your tenant.
 - **Recently viewed** is stored in localStorage and shown on the homepage and PDP.
-- **Personalisation**: logging in as a different test customer changes the homepage "Picked for you" order.
+- **Personalisation**: logging in as a test customer adds a "Picked for you" carousel to the homepage. Add more customers in `js/store.js` once their contacts exist in the tenant (each needs a real CD ID).
 
 ## Project layout
 

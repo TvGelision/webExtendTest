@@ -30,7 +30,7 @@
 
     if (we.config.testMode) we.testMode();
     if (we.config.businessAreaId) we.businessAreaId(we.config.businessAreaId);
-    if (session) we.setCustomerId(session.customerId);   // only when "logged in"
+    if (session) we.setCustomerId(session.cdId);   // CD ID of the test contact; only when "logged in"
     if (extra) extra();
     slotsUsed.forEach(function (s) { we.recommend(s); });
     we.cart(cartPayload(lines));      // sent on every page; [] clears the cart on the SAP side
@@ -120,7 +120,7 @@
   }
   /** "Picked for you": popularity order rotated by customer, so each test customer sees a different list. */
   function personal(all, session) {
-    var idx = Shop.CUSTOMERS.map(function (c) { return c.customerId; }).indexOf(session.customerId);
+    var idx = Shop.CUSTOMERS.map(function (c) { return c.cdId; }).indexOf(session.cdId);
     var sorted = all.slice().sort(byPopularity);
     var shift = (idx + 1) * 3 % sorted.length;
     return sorted.slice(shift).concat(sorted.slice(0, shift));
@@ -332,14 +332,14 @@
 
     login: function (products, lines) {
       var s = Shop.getSession();
-      $('#current').textContent = s ? 'Logged in as ' + s.name + ' (' + s.customerId + ').' : 'Not logged in.';
+      $('#current').textContent = s ? 'Logged in as ' + s.name + ' (' + s.cdId + ').' : 'Not logged in.';
       $('#customer').innerHTML = Shop.CUSTOMERS.map(function (c) {
-        return '<option value="' + Shop.esc(c.customerId) + '">' + Shop.esc(c.name) + ' – ' + Shop.esc(c.customerId) + '</option>';
+        return '<option value="' + Shop.esc(c.cdId) + '">' + Shop.esc(c.name) + ' – ' + Shop.esc(c.cdId) + '</option>';
       }).join('');
 
       $('#login-form').addEventListener('submit', function (ev) {
         ev.preventDefault();
-        var chosen = Shop.CUSTOMERS.filter(function (c) { return c.customerId === $('#customer').value; })[0];
+        var chosen = Shop.CUSTOMERS.filter(function (c) { return c.cdId === $('#customer').value; })[0];
         Shop.login(chosen);
         location.href = 'index.html';       // setCustomerId is sent by track() on the next page
       });
