@@ -17,16 +17,15 @@
   /* =====================================================================
    * SAP TRACKING CONFIGURATION  (the only place to edit SAP settings)
    * =====================================================================
-   * Everything below is a PLACEHOLDER. No real IDs or keys belong in this
-   * repository. Fill in your own values locally when you move beyond the
-   * debug-console-only stage.
+   * Merchant ID and business area ID are tenant identifiers (visible in page source anyway).
+   * No API keys or secrets belong in this repository.
    */
   var SAP_CONFIG = {
     // Merchant ID of your Web Extend / Predict tenant. Used by the real loader script.
-    merchantId: 'REPLACE_WITH_MERCHANT_ID',
+    merchantId: '178E013E4645AED4',
 
     // Business area ID sent via the businessAreaId command ('' = do not send).
-    businessAreaId: 'REPLACE_WITH_BUSINESS_AREA_ID',
+    businessAreaId: 'NL01',
 
     // When true, pages call testMode() before go(), so SAP treats the traffic as test data.
     testMode: true,
