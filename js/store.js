@@ -14,8 +14,10 @@
 
   // Synthetic customers for the simulated login. IDs are made-up pseudonyms,
   // not real people. No passwords exist: "login" just picks one of these.
+  // Customer One uses the CD ID of the test contact in the SAP tenant (email
+  // test-customer-1001@example.com); that is the value setCustomerId sends.
   var CUSTOMERS = [
-    { customerId: 'test-customer-1001', name: 'Test Customer One' },
+    { customerId: '123456789', name: 'Test Customer One' },
     { customerId: 'test-customer-1002', name: 'Test Customer Two' },
     { customerId: 'test-customer-1003', name: 'Test Customer Three' }
   ];

@@ -101,7 +101,7 @@ Test with GTM Preview (Tag Assistant) and the debug console side by side. Set `g
 2. Click a category pill. `category "Apparel"` appears before `go`.
 3. Open a product. `view "P1001"` appears.
 4. Click **Add to cart**. A fresh `cart [...]` + `go` pair appears.
-5. Open **Log in**, choose a customer, submit. On the next page `setCustomerId "test-customer-1001"` appears.
+5. Open **Log in**, choose a customer, submit. On the next page `setCustomerId "123456789"` (the CD ID of Test Customer One) appears.
 6. Open the cart, change quantities, check the `cart` payload follows.
 7. Check out with the pre-filled fake data. The confirmation page logs `purchase` with the `TEST-...` order ID. Reloading it logs "purchase skipped" instead of a duplicate.
 8. Use **Clear** and **Collapse** on the console as needed.
