@@ -177,9 +177,8 @@
       el.innerHTML =
         '<a class="brand" href="index.html">Web Extend Test Shop</a>' +
         '<nav>' +
-          '<a href="category.html?cat=Apparel">Apparel</a>' +
-          '<a href="category.html?cat=Footwear">Footwear</a>' +
-          '<a href="category.html?cat=Accessories">Accessories</a>' +
+          '<a href="category.html?cat=Hardware">Hardware</a>' +
+          '<a href="category.html?cat=Hardwarewartung">Hardwarewartung</a>' +
           '<a href="category.html?cat=Sale" class="sale-link">Sale</a>' +
         '</nav>' +
         // Plain GET form: category.html?q=... filters the products and sends the searchTerm command.

@@ -121,7 +121,7 @@
   window.WebExtend = {
     config: SAP_CONFIG,
 
-    /** Category page. path is a ' > ' separated string, e.g. 'Apparel > Jackets'. */
+    /** Category page. path is a ' > ' separated string, e.g. 'Hardware > Computer-Komponenten > Sonstiges'. */
     category: function (path) { dispatch('category', path); },
 
     /** Product detail page. itemId must match the item ID in your product catalog feed. */

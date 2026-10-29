@@ -102,16 +102,16 @@
   function byPopularity(a, b) { return b.popularity - a.popularity; }
   function topCat(p) { return p.category.split(' > ')[0]; }
 
-  /** Alternatives: same sub-category first, then rest of the same top category. */
+  /** Alternatives: same product type first (e.g. other SSDs), then other products of the same top category. */
   function alternatives(p, all) {
-    var others = all.filter(function (x) { return x.id !== p.id && topCat(x) === topCat(p); });
-    var sub = others.filter(function (x) { return x.category === p.category; }).sort(byPopularity);
-    var rest = others.filter(function (x) { return x.category !== p.category; }).sort(byPopularity);
-    return sub.concat(rest);
+    var others = all.filter(function (x) { return x.id !== p.id; });
+    var sameType = others.filter(function (x) { return x.type === p.type; }).sort(byPopularity);
+    var rest = others.filter(function (x) { return x.type !== p.type && topCat(x) === topCat(p); }).sort(byPopularity);
+    return sameType.concat(rest);
   }
-  /** Complementary: popular products from the other top categories. */
+  /** Complementary: popular products of a different type (e.g. a keyboard for a monitor). */
   function complementary(p, all) {
-    return all.filter(function (x) { return topCat(x) !== topCat(p); }).sort(byPopularity);
+    return all.filter(function (x) { return x.type !== p.type; }).sort(byPopularity);
   }
   function recentlyViewed(all, excludeId) {
     return Shop.getRecent().filter(function (id) { return id !== excludeId; }).map(function (id) {
@@ -153,13 +153,13 @@
       var params = new URLSearchParams(location.search);
       var cat = params.get('cat') || '';
       var q = (params.get('q') || '').trim();
-      var tops = ['Apparel', 'Footwear', 'Accessories', 'Sale'];
+      var tops = ['Hardware', 'Hardwarewartung', 'Sale'];
 
       // Filter: search term, "Sale" pseudo-category, or category path prefix.
       var shown = products.filter(function (p) {
         if (q) return (p.name + ' ' + p.category + ' ' + p.description).toLowerCase().indexOf(q.toLowerCase()) !== -1;
         if (cat === 'Sale') return p.salePrice != null;
-        return !cat || p.category.indexOf(cat) === 0;
+        return !cat || p.category === cat || p.category.indexOf(cat + ' > ') === 0;
       });
 
       $('#cat-title').textContent = q ? 'Search: “' + q + '”' : (cat || 'All products');

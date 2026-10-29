@@ -22,9 +22,9 @@ Then open <http://localhost:8080/>.
 | File | Purpose | Web Extend commands (besides the common ones) |
 | --- | --- | --- |
 | `index.html` | Homepage: hero, sale promo, category tiles, carousels (trending, on sale, new, recently viewed, picked for you when logged in) | `recommend` per carousel |
-| `category.html?cat=Apparel` | Category listing with sorting; `?cat=Sale` lists discounted items | `category` |
+| `category.html?cat=Hardware` | Category listing with sorting; `?cat=Sale` lists discounted items | `category` |
 | `category.html?q=merino` | Search results | `searchTerm` |
-| `product.html?id=P1001` | Product detail with sale price, stock note and 3 carousels (alternatives, also bought, recently viewed) | `view`, `recommend` |
+| `product.html?id=000000000010010563` | Product detail with sale price, stock note and 3 carousels (alternatives, also bought, recently viewed) | `view`, `recommend` |
 | `cart.html` | Cart with quantity changes and a "you might also like" carousel | `recommend` |
 | `checkout.html` | Checkout form (fake data) | – |
 | `confirmation.html` | Order confirmation | `purchase` |
@@ -36,8 +36,9 @@ Adding to cart or changing quantities re-sends `cart` + `go` without a page load
 
 ## Test scenarios built into the data
 
-- **Sale items** (5 products): `price` is the list price, `salePrice` is what the cart and `cart`/`purchase` payloads use.
-- **Low stock** (P1004, P2003) and **sold out** (P3004, add-to-cart disabled).
+- **Prices are synthetic**: the source list has list price 0, so prices, sale prices, stock levels and popularity were invented. Item IDs, names and categories come from the list (sold out = `Available: FALSE`).
+- **Sale items** (4 products): `price` is the list price, `salePrice` is what the cart and `cart`/`purchase` payloads use.
+- **Low stock** (`000000000010010376`, `000000000011010545`) and **sold out** (`000000000010010163`, `000000000010010283`, `000000000010010645`; add-to-cart disabled).
 - **Recommendation slots**: carousels are labelled `slot · RELATED`, `ALSO_BOUGHT`, `POPULAR`, `DEALS`, `NEW`, `VIEWED`, `PERSONAL`, `CART`.
   They are filled by simple local rules (see `pages.js`) and mark where SAP recommendations would go.
   `recommend` and `searchTerm` are extras beyond the nine required commands; verify their exact names and options for your tenant.
@@ -47,7 +48,7 @@ Adding to cart or changing quantities re-sends `cart` + `go` without a page load
 ## Project layout
 
 ```
-data/products.json    12 synthetic products
+data/products.json    20 products from the CGM catalog list (item ID = Material number)
 css/styles.css        styling, including the debug console
 js/web-extend.js      the Web Extend adapter + the SAP configuration section
 js/debug-console.js   visible debug console (log persists across pages per tab)
@@ -81,7 +82,7 @@ With `gtm.enabled: true` in the configuration block of `js/web-extend.js`, the a
 
 1. pushes `{ event: 'webextend_init', we_merchantId, we_businessAreaId, we_testMode }` onto `window.dataLayer`,
 2. loads the GTM container (`gtm.containerId`) from JavaScript, so there is no snippet to paste into each page,
-3. pushes one event per command: `{ event: 'webextend_command', we_command: 'view', we_payload_json: '"P1001"' }`.
+3. pushes one event per command: `{ event: 'webextend_command', we_command: 'view', we_payload_json: '"000000000010010563"' }`.
 
 `we_payload_json` is a JSON string on purpose, because GTM merges nested objects between pushes.
 Commands are still written to the debug console too.
@@ -98,8 +99,8 @@ Test with GTM Preview (Tag Assistant) and the debug console side by side. Set `g
 ## Test checklist
 
 1. Open the home page. Console shows `testMode`, `businessAreaId`, `cart []`, `tag "page:home"`, `go`.
-2. Click a category pill. `category "Apparel"` appears before `go`.
-3. Open a product. `view "P1001"` appears.
+2. Click a category pill. `category "Hardware"` appears before `go`.
+3. Open a product. `view "000000000010010563"` appears.
 4. Click **Add to cart**. A fresh `cart [...]` + `go` pair appears.
 5. Open **Log in**, choose a customer, submit. On the next page `setCustomerId "123456789"` (the CD ID of Test Customer One) appears.
 6. Open the cart, change quantities, check the `cart` payload follows.
