@@ -115,8 +115,13 @@
     /* ---------------- simulated customer session ---------------- */
     getSession: function () {
       var s = read(SESSION_KEY, null);
-      if (s && !s.cdId && s.customerId) s.cdId = s.customerId;   // sessions saved before the rename
-      return s;
+      if (!s) return null;
+      // Sessions saved by older versions miss fields (email, key) or use `customerId`.
+      // Rebuild them from the customer list so name, email and CD ID always match.
+      var cdId = s.cdId || s.customerId;
+      var match = CUSTOMERS.filter(function (c) { return c.key === s.key || c.cdId === cdId; })[0];
+      return match ? { key: match.key, name: match.name, email: match.email, cdId: match.cdId }
+                   : { key: s.key, name: s.name, email: s.email, cdId: cdId };
     },
     login: function (customer) { write(SESSION_KEY, customer); },
     logout: function () { try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ } },
@@ -144,7 +149,7 @@
           '<input type="search" name="q" placeholder="Search products" aria-label="Search products">' +
         '</form>' +
         '<span class="session">' +
-          (s ? Shop.esc(s.name) + ' (' + Shop.esc(s.email || '') + ') · <a href="login.html">Switch / log out</a>'
+          (s ? Shop.esc(s.name) + (s.email ? ' (' + Shop.esc(s.email) + ')' : '') + ' · <a href="login.html">Switch / log out</a>'
              : '<a href="login.html">Log in</a>') +
         '</span>' +
         '<a href="cart.html">Cart <span class="badge">' + Shop.cartCount() + '</span></a>';
