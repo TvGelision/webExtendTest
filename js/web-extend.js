@@ -34,7 +34,7 @@
     // Stage 2: set to true to also push every command onto window.ScarabQueue
     // (the queue the real SAP script drains). The SAP script itself is NOT
     // loaded by this project - add it yourself, in the HTML, when ready.
-    forwardToScarabQueue: false,
+    forwardToScarabQueue: true,
 
     // Google Tag Manager route (option B). When enabled, this file loads the GTM container
     // and pushes every command onto window.dataLayer. A GTM tag then loads Web Extend and
