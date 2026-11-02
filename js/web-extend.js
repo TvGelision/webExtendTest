@@ -67,9 +67,10 @@
       sdkUrl: 'https://client-version.cf.emarsys.net/web-emarsys-sdk-v4/latest/web-emarsys-sdk.js',
       defaultTitle: 'Web Extend Test Shop',
       iconUrl: 'https://tvgelision.github.io/webExtendTest/img/push-icon.png',   // PNG
-      // Field ID (Management > Data Management > Field Editor) of the field that holds the CD ID.
-      // Needed to link the browser to the logged-in contact. null = do not link (anonymous only).
-      loginFieldId: null
+      // Field ID of the "CD ID" contact field. EC EE has no Field Editor; the ID was read from the
+      // contact edit form (<input name="inp_20000003">). It links the browser to the logged-in
+      // contact via the SDK login() call. null = do not link (anonymous only).
+      loginFieldId: 20000003
     }
   };
   /* ===================== END OF SAP TRACKING CONFIGURATION ============= */

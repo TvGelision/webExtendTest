@@ -104,7 +104,7 @@ Settings: `webPush` block in the configuration section of `js/web-extend.js`. Lo
 - The **service worker must be in the domain root**. `root-site/service-worker.js` is deployed to a separate GitHub repo named `tvgelision.github.io`, so it is served at `https://tvgelision.github.io/service-worker.js`.
 - The **public** VAPID key is in the config. The **private** key was generated into `.secrets/vapid-private-key.txt` (git-ignored) and is only entered in SAP (Add VAPID). Never commit it.
 - Opt-in bar: the permission prompt only appears after clicking "Enable notifications".
-- Linking to the contact: set `loginFieldId` to the ID of the CD ID field (Management > Data Management > Field Editor). The logged-in customer's CD ID is then sent with the SDK `login()` call. Email is never sent.
+- Linking to the contact: `loginFieldId` is the ID of the CD ID field (20000003, read from the name `inp_20000003` of the input in the contact edit form, because EC EE has no Field Editor). The logged-in customer's CD ID is then sent with the SDK `login()` call. Email is never sent.
 - Check results in the domain's **Users** and **SDK Events** buttons (Channels > Web > Web Push > Domains) and the Domain Audience numbers.
 
 ## Test checklist
