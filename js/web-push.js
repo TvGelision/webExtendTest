@@ -112,15 +112,44 @@
     });
   }
 
+  /**
+   * The bar is always explained, never silently hidden:
+   *  - permission 'default'  -> "Enable notifications" (prompt appears after the click)
+   *  - permission 'granted'  -> if the SDK says not subscribed yet, "Finish setup" (links + subscribes);
+   *                             if already subscribed, the bar is hidden
+   *  - permission 'denied'   -> tells the visitor how to unblock (the browser never asks twice)
+   */
   function refreshBar() {
     if (!bar) return;
     var perm = Notification.permission;                  // 'default' | 'granted' | 'denied'
     var s = currentSession();
-    bar.hidden = dismissed() || perm !== 'default';
-    bar.querySelector('#push-text').textContent = s
+    var text = bar.querySelector('#push-text');
+    var enable = bar.querySelector('#push-enable');
+    if (dismissed()) { bar.hidden = true; return; }
+
+    if (perm === 'denied') {
+      text.textContent = 'Notifications are blocked for this site. Allow them via the lock icon next to the address bar, then reload.';
+      enable.hidden = true;
+      bar.hidden = false;
+      return;
+    }
+    enable.hidden = false;
+    if (perm === 'granted') {
+      // Permission exists; show the bar only while the SDK does not consider the browser subscribed.
+      var sdk = window.WebEmarsysSdk;
+      if (!sdk || typeof sdk.isSubscribed !== 'function') { bar.hidden = true; return; }
+      sdk.isSubscribed().then(function (sub) {
+        text.textContent = 'Notifications are allowed but not linked yet' + (s ? ' for ' + s.name : ' (log in first)') + '.';
+        enable.textContent = 'Finish setup';
+        bar.hidden = !!sub;
+      }).catch(function () { bar.hidden = true; });
+      return;
+    }
+    text.textContent = s
       ? 'Get deal alerts as browser notifications, linked to ' + s.name + '.'
       : 'Get deal alerts as browser notifications. Log in first so they reach your account.';
-    if (perm === 'denied') note('notifications are blocked in this browser; reset the site permission to try again');
+    enable.textContent = 'Enable notifications';
+    bar.hidden = false;
   }
 
   document.addEventListener('DOMContentLoaded', function () {
