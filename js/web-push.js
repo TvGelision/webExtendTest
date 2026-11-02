@@ -40,11 +40,19 @@
     defaultNotificationTitle: cfg.defaultTitle,
     defaultNotificationIcon: cfg.iconUrl,
     autoSubscribe: false,              // SAP: browsers block automatic prompts
+    enableLogging: true,               // SDK prints its init steps and errors to the browser console
     serviceWorker: {
       url: cfg.serviceWorkerUrl,
       applicationServerPublicKey: cfg.publicKey
     }
   }]);
+
+  // The SDK's async init() fails silently when a step is rejected (browser support check, domain
+  // code check, service worker registration). Surface those rejections in the debug console.
+  window.addEventListener('unhandledrejection', function (ev) {
+    var r = ev.reason;
+    note('unhandled rejection: ' + (r && r.message ? r.message : String(r)));
+  });
 
   // Event callbacks, all just logged for debugging.
   ['onSubscribe', 'onUnsubscribe', 'onSWInitError', 'onPermissionPrompt', 'onPermissionDenied', 'onPermissionGranted']
