@@ -215,3 +215,11 @@ label.inline { display: flex; align-items: center; gap: 8px; }
   background: transparent; color: var(--fg); font: inherit; cursor: pointer;
 }
 .menu a:hover, .menu button:hover { background: var(--surface); text-decoration: none; }
+
+/* ---------- Web Push opt-in bar ---------- */
+.push-bar {
+  max-width: 1040px; margin: 0 auto 8px; padding: 10px 24px; display: flex; flex-wrap: wrap;
+  align-items: center; gap: 10px 14px; background: var(--surface); border-radius: var(--radius); font-size: .9rem;
+}
+.push-bar[hidden] { display: none; }
+.push-bar span { flex: 1; min-width: 220px; }

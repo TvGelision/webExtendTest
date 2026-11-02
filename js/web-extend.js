@@ -52,6 +52,24 @@
     gtm: {
       enabled: false,
       containerId: 'GTM-PDRBRRPX'
+    },
+
+    // Web Push (SAP Emarsys web SDK v4, see js/web-push.js). The service worker must be served
+    // from the domain root: https://tvgelision.github.io/service-worker.js (repo tvgelision.github.io).
+    webPush: {
+      enabled: true,
+      // Only runs on the domain registered in Channels > Web > Web Push > Domains.
+      allowedHosts: ['tvgelision.github.io'],
+      domainCode: 'EMS59-DBED8',                       // "Domain code" of that domain
+      // PUBLIC VAPID key (safe to publish). The private key lives only in SAP, never in this repo.
+      publicKey: 'BNRKFsyRLdkl5oi1m1EpBjRu0AjbHnlaR26Uy1eN1BWuAFnWAbcpVHc2tyocp3I-XO8Ey3XU1ymmmhccH4ZwgdE',
+      serviceWorkerUrl: '/service-worker.js',          // absolute: the worker lives in the domain root
+      sdkUrl: 'https://client-version.cf.emarsys.net/web-emarsys-sdk-v4/latest/web-emarsys-sdk.js',
+      defaultTitle: 'Web Extend Test Shop',
+      iconUrl: 'https://tvgelision.github.io/webExtendTest/img/push-icon.png',   // PNG
+      // Field ID (Management > Data Management > Field Editor) of the field that holds the CD ID.
+      // Needed to link the browser to the logged-in contact. null = do not link (anonymous only).
+      loginFieldId: null
     }
   };
   /* ===================== END OF SAP TRACKING CONFIGURATION ============= */

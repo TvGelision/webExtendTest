@@ -96,6 +96,17 @@ In GTM, a typical setup is:
 
 Test with GTM Preview (Tag Assistant) and the debug console side by side. Set `gtm.enabled: false` to go back to console-only.
 
+## Web Push (SAP Emarsys web SDK v4)
+
+Settings: `webPush` block in the configuration section of `js/web-extend.js`. Logic: `js/web-push.js`.
+
+- The SDK only runs on `tvgelision.github.io` (the domain registered under Channels > Web > Web Push > Domains); elsewhere the debug console says "webpush: off on ...".
+- The **service worker must be in the domain root**. `root-site/service-worker.js` is deployed to a separate GitHub repo named `tvgelision.github.io`, so it is served at `https://tvgelision.github.io/service-worker.js`.
+- The **public** VAPID key is in the config. The **private** key was generated into `.secrets/vapid-private-key.txt` (git-ignored) and is only entered in SAP (Add VAPID). Never commit it.
+- Opt-in bar: the permission prompt only appears after clicking "Enable notifications".
+- Linking to the contact: set `loginFieldId` to the ID of the CD ID field (Management > Data Management > Field Editor). The logged-in customer's CD ID is then sent with the SDK `login()` call. Email is never sent.
+- Check results in the domain's **Users** and **SDK Events** buttons (Channels > Web > Web Push > Domains) and the Domain Audience numbers.
+
 ## Test checklist
 
 1. Open the home page. Console shows `testMode`, `businessAreaId`, `cart []`, `tag "page:home"`, `go`.
