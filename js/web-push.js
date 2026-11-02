@@ -57,7 +57,12 @@
   // Event callbacks, all just logged for debugging.
   ['onSubscribe', 'onUnsubscribe', 'onSWInitError', 'onPermissionPrompt', 'onPermissionDenied', 'onPermissionGranted']
     .forEach(function (name) {
-      window.WebEmarsysSdk.push([name, function (p) { note(name, p); refreshBar(); }]);
+      window.WebEmarsysSdk.push([name, function (p) {
+        note(name, p);
+        // login() only works once the SDK has a client record, which is created on subscribe.
+        if (name === 'onSubscribe' || name === 'onPermissionGranted') syncContact();
+        refreshBar();
+      }]);
     });
 
   // onReady: the SDK is initialised; only now may login/subscribe be called.
@@ -76,14 +81,23 @@
   /* ---------- link / unlink the browser to the logged-in contact ---------- */
   function currentSession() { return window.Shop ? window.Shop.getSession() : null; }
 
+  var linkedFor = null;   // CD ID already linked in this page view (login() can trigger onSubscribe again)
+
   function syncContact() {
     var s = currentSession();
     var sdk = window.WebEmarsysSdk;
     if (s && cfg.loginFieldId) {
+      // The SDK has no client record until the browser has subscribed ("No client state set!").
+      if (Notification.permission !== 'granted') {
+        note('contact not linked yet: waiting for the browser to subscribe');
+        return Promise.resolve();
+      }
+      if (linkedFor === s.cdId) return Promise.resolve();
+      linkedFor = s.cdId;
       // fieldValue is the CD ID: non-PII, unique and immutable, as SAP requires (no email!).
       return sdk.login({ fieldId: cfg.loginFieldId, fieldValue: s.cdId })
-        .then(function (ok) { note('login ' + s.cdId, ok); })
-        .catch(function (e) { note('login failed', String(e)); });
+        .then(function (ok) { if (!ok) linkedFor = null; note('login ' + s.cdId, ok); })
+        .catch(function (e) { linkedFor = null; note('login failed', String(e)); });
     }
     if (s) { note('logged in as ' + s.cdId + ' but loginFieldId is not set: browser stays anonymous'); return Promise.resolve(); }
     // Logged out in the shop: unlink a previously linked contact.
@@ -109,9 +123,10 @@
     header.parentNode.insertBefore(bar, header.nextSibling);
 
     bar.querySelector('#push-enable').addEventListener('click', function () {
-      // Link to the contact first (if logged in), then ask for permission; both inside this click.
-      Promise.resolve(syncContact()).then(function () { return window.WebEmarsysSdk.subscribe(); })
-        .then(function () { note('subscribe finished'); refreshBar(); })
+      // Subscribe first (this click triggers the permission prompt), then link the contact.
+      window.WebEmarsysSdk.subscribe()
+        .then(function () { note('subscribe finished'); return syncContact(); })
+        .then(function () { refreshBar(); })
         .catch(function (e) { note('subscribe failed', String(e)); });
     });
     bar.querySelector('#push-dismiss').addEventListener('click', function () {
