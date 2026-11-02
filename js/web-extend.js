@@ -63,7 +63,9 @@
       domainCode: 'EMS59-DBED8',                       // "Domain code" of that domain
       // PUBLIC VAPID key (safe to publish). The private key lives only in SAP, never in this repo.
       publicKey: 'BNRKFsyRLdkl5oi1m1EpBjRu0AjbHnlaR26Uy1eN1BWuAFnWAbcpVHc2tyocp3I-XO8Ey3XU1ymmmhccH4ZwgdE',
-      serviceWorkerUrl: '/service-worker.js',          // absolute: the worker lives in the domain root
+      // NO leading slash: the SDK registers '/' + url itself. '/service-worker.js' became
+      // '//service-worker.js', which the browser read as a host name and rejected.
+      serviceWorkerUrl: 'service-worker.js',           // served from the domain root
       sdkUrl: 'https://client-version.cf.emarsys.net/web-emarsys-sdk-v4/latest/web-emarsys-sdk.js',
       defaultTitle: 'Web Extend Test Shop',
       iconUrl: 'https://tvgelision.github.io/webExtendTest/img/push-icon.png',   // PNG
