@@ -47,7 +47,7 @@
 
     // Google Tag Manager route (option B). When enabled, this file loads the GTM container
     // and pushes every command onto window.dataLayer. A GTM tag then loads Web Extend and
-    // passes the commands on (see README, "Connecting via GTM").
+    // passes the commands on (see your private notes).
     // GTM is a Google container ID, not a secret; it is visible in page source anyway.
     gtm: {
       enabled: false,
