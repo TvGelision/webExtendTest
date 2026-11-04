@@ -371,7 +371,7 @@
     }).catch(function (err) {
       window.WebExtendDebug.log('ERROR ' + err.message + ' - serve the folder over http://, not file://', undefined, 'note');
       var main = document.querySelector('main');
-      if (main) main.insertAdjacentHTML('afterbegin', '<p class="notice warn">Could not load products. Start a local web server (see README).</p>');
+      if (main) main.insertAdjacentHTML('afterbegin', '<p class="notice warn">Could not load products. Start a local web server, for example: python3 -m http.server 8080.</p>');
     });
   });
 })();
