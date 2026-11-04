@@ -59,8 +59,10 @@
     .forEach(function (name) {
       window.WebEmarsysSdk.push([name, function (p) {
         note(name, p);
-        // login() only works once the SDK has a client record, which is created on subscribe.
-        if (name === 'onSubscribe' || name === 'onPermissionGranted') syncContact();
+        // login() only works once the SDK has a client record, and the SDK re-links the browser
+        // ANONYMOUSLY during its own registration. So link after it is done: onSubscribe and onReady.
+        // (onPermissionGranted fires in the middle of that registration, too early.)
+        if (name === 'onSubscribe') syncContact();
         refreshBar();
       }]);
     });
@@ -68,7 +70,7 @@
   // onReady: the SDK is initialised; only now may login/subscribe be called.
   window.WebEmarsysSdk.push(function () {
     note('SDK ready');
-    syncContact();
+    syncContact();      // onReady is emitted after the SDK's own registration is complete
     refreshBar();
   });
 
@@ -81,7 +83,7 @@
   /* ---------- link / unlink the browser to the logged-in contact ---------- */
   function currentSession() { return window.Shop ? window.Shop.getSession() : null; }
 
-  var linkedFor = null;   // CD ID already linked in this page view (login() can trigger onSubscribe again)
+  var linking = false;   // re-entrancy guard: login() must not trigger itself through the events
 
   function syncContact() {
     var s = currentSession();
@@ -92,12 +94,13 @@
         note('contact not linked yet: waiting for the browser to subscribe');
         return Promise.resolve();
       }
-      if (linkedFor === s.cdId) return Promise.resolve();
-      linkedFor = s.cdId;
+      if (linking) return Promise.resolve();
+      linking = true;
       // fieldValue is the CD ID: non-PII, unique and immutable, as SAP requires (no email!).
       return sdk.login({ fieldId: cfg.loginFieldId, fieldValue: s.cdId })
-        .then(function (ok) { if (!ok) linkedFor = null; note('login ' + s.cdId, ok); })
-        .catch(function (e) { linkedFor = null; note('login failed', String(e)); });
+        .then(function (ok) { note('login ' + s.cdId, ok); })
+        .catch(function (e) { note('login failed', String(e)); })
+        .then(function () { setTimeout(function () { linking = false; }, 2000); });
     }
     if (s) { note('logged in as ' + s.cdId + ' but loginFieldId is not set: browser stays anonymous'); return Promise.resolve(); }
     // Logged out in the shop: unlink a previously linked contact.
